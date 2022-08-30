@@ -30,6 +30,45 @@ function loadImage(){
     gameoverImage.src = "images/gameover.png";
 }
 
+let keysDown = {};
+
+function setupKeyboardListener(){
+    document.addEventListener("keydown", function(event){
+
+        keysDown[event.keyCode] = true;
+        console.log("키다운객체에 들어간 값은?", keysDown);
+
+                
+    });
+    document.addEventListener("keyup", function(){
+        delete keysDown[event.keyCode];
+        console.log("버튼 클릭 후", keysDown);
+    });
+}
+
+function update(){
+    //right 
+    if(39 in keysDown){
+        spaceshipX += 5; // 우주선의 속도를 설정
+
+    } 
+    //left
+    if(37 in keysDown){
+        spaceshipX -= 5;
+    }
+    // 우주선의 좌표값을 경기장 안에서만 있게 하려면?
+    if(spaceshipX <= 0){
+        spaceshipX = 0;
+    }
+    if(spaceshipX >= canvas.width-64){
+        spaceshipX = canvas.width-64;
+    }
+}
+
+
+
+
+
 function render(){
     ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
     ctx.drawImage(spaceshipImage,spaceshipX,spaceshipY);
@@ -37,9 +76,16 @@ function render(){
 
 // 무한render
 function main(){
+    update();
     render();
     requestAnimationFrame(main);
 }
 
 loadImage();
+setupKeyboardListener();
 main();
+
+
+// 방향키를 누르면
+// 우주선의 xy좌표가 바뀌고
+// 다시 render
